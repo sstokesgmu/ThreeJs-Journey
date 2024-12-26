@@ -39,27 +39,42 @@ window.addEventListener('resize', () =>
 /**
  * Textures
  */
-//Load the image with Texture Loader
-const textureLoader = new THREE.TextureLoader();
-const texture = textureLoader.load('/textures/door/color.jpg',
-    () => {
-        console.log('loading finished');
-    },
-    () => {
-        console.log('loading progressing');
-    },
-    () => {
-        console.log('loading error');
+//Load the image with the loading manger
+const loadingManager = new THREE.LoadingManager();
+loadingManager.onStart = () => 
+    {
+        console.log('loading started')
     }
-);
-texture.colorSpace = THREE.SRGBColorSpace;
+    loadingManager.onLoad = () =>
+    {
+        console.log('loading finished')
+    }
+    loadingManager.onProgress = () =>
+    {
+        console.log('loading progressing')
+    }
+    loadingManager.onError = () =>
+    {
+        console.log('loading error')
+    }
+    
+const textureLoader = new THREE.TextureLoader(loadingManager);
+const colorTexture = textureLoader.load('/textures/door/color.jpg')
+colorTexture.colorSpace = THREE.SRGBColorSpace
+const alphaTexture = textureLoader.load('/textures/door/alpha.jpg')
+const heightTexture = textureLoader.load('/textures/door/height.jpg')
+const normalTexture = textureLoader.load('/textures/door/normal.jpg')
+const ambientOcclusionTexture = textureLoader.load('/textures/door/ambientOcclusion.jpg')
+const metalnessTexture = textureLoader.load('/textures/door/metalness.jpg')
+const roughnessTexture = textureLoader.load('/textures/door/roughness.jpg')
+
 
 
 /**
  * Object
  */
 const geometry = new THREE.BoxGeometry(1, 1, 1)
-const material = new THREE.MeshBasicMaterial({ map: texture });
+const material = new THREE.MeshBasicMaterial({ map: normalTexture });
 const mesh = new THREE.Mesh(geometry, material)
 scene.add(mesh)
 
