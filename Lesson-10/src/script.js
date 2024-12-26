@@ -39,14 +39,22 @@ window.addEventListener('resize', () =>
 /**
  * Textures
  */
-//Load the image
-const image = new Image();
-const texture = new THREE.Texture(image);
+//Load the image with Texture Loader
+const textureLoader = new THREE.TextureLoader();
+const texture = textureLoader.load('/textures/door/color.jpg',
+    () => {
+        console.log('loading finished');
+    },
+    () => {
+        console.log('loading progressing');
+    },
+    () => {
+        console.log('loading error');
+    }
+);
 texture.colorSpace = THREE.SRGBColorSpace;
-image.addEventListener('load', () => {
-    texture.needsUpdate = true;
-})
-image.src = '/textures/door/color.jpg'
+
+
 /**
  * Object
  */
