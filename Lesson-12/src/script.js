@@ -3,7 +3,11 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import GUI from 'lil-gui'
 
 //Import Font Loader
-import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js"
+import { FontLoader } from "three/addons/loaders/FontLoader.js"
+import { TextGeometry} from "three/addons/geometries/TextGeometry.js"
+
+
+
 
 
 
@@ -27,19 +31,30 @@ const textureLoader = new THREE.TextureLoader()
 /**
  * Fonts 
  */
-const fontloader = new FontLoader();
-const font = fontLoader.load(
+const loader = new FontLoader();
+loader.load(
     //resource url
-    "./static/fonts/helvetiker_bold.typeface.json",
+    "/fonts/helvetiker_bold.typeface.json",
     (font) => {
-        const geometry = new THREE.TextBufferGeometry(
+        const geometry = new TextGeometry(
             "Hello Sterling",
             {
-                font:font,
-                size:0.5,
-                depth: 0.2//font height
+                font: font,
+                size: 0.5,
+                depth: 0.2,
+                curveSegments: 12,
+                bevelEnabled: true,
+                bevelThickness: 0.03,
+                bevelSize: 0.02,
+                bevelOffset: 0,
+                bevelSegments: 5
             }
         )
+        const textMaterial = new THREE.MeshBasicMaterial();
+        const text = new THREE.Mesh(geometry, textMaterial);
+
+        geometry.center();
+        scene.add(text);
     }
 )
 
@@ -51,7 +66,7 @@ const cube = new THREE.Mesh(
     new THREE.MeshBasicMaterial()
 )
 
-scene.add(cube)
+
 
 /**
  * Sizes
