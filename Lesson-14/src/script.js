@@ -2,77 +2,67 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import GUI from 'lil-gui'
 
-//Import Font Loader
-import { FontLoader } from "three/addons/loaders/FontLoader.js"
-import { TextGeometry} from "three/addons/geometries/TextGeometry.js"
-
-
-
-
-
-
 /**
  * Base
  */
 // Debug
 const gui = new GUI()
 
-
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
-
-
 
 // Scene
 const scene = new THREE.Scene()
 
-const axisHelper = new THREE.AxesHelper();
-scene.add(axisHelper);
 /**
- * Textures
+ * Lights
  */
-const textureLoader = new THREE.TextureLoader()
+
+//Ambient Light 
+const ambLight = new THREE.AmbientLight(0xffffff, 1);
+scene.add(ambLight);
+
+//Directional Light 
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.9);
+scene.add(directionalLight);
+directionalLight.position.set(1,1,-3);
+gui.add(directionalLight, 'intensity').min(0).max(3).step(0.001);
+
+//gui.add(ambLight, 'intensity').min(0).max(3).step(0.001);
 
 /**
- * Fonts 
+ * Objects
  */
-const loader = new FontLoader();
-loader.load(
-    //resource url
-    "/fonts/helvetiker_bold.typeface.json",
-    (font) => {
-        const geometry = new TextGeometry(
-            "Hello Sterling",
-            {
-                font: font,
-                size: 0.5,
-                depth: 0.2,
-                curveSegments: 12,
-                bevelEnabled: true,
-                bevelThickness: 0.03,
-                bevelSize: 0.02,
-                bevelOffset: 0,
-                bevelSegments: 5
-            }
-        )
-        const textMaterial = new THREE.MeshBasicMaterial();
-        const text = new THREE.Mesh(geometry, textMaterial);
+// Material
+const material = new THREE.MeshStandardMaterial()
+material.roughness = 0.4
 
-        geometry.computeBoundingBox();
-        console.log(geometry.boundingBox);
-        scene.add(text);
-    }
+// Objects
+const sphere = new THREE.Mesh(
+    new THREE.SphereGeometry(0.5, 32, 32),
+    material
 )
+sphere.position.x = - 1.5
 
-/**
- * Object
- */
 const cube = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial()
+    new THREE.BoxGeometry(0.75, 0.75, 0.75),
+    material
 )
 
+const torus = new THREE.Mesh(
+    new THREE.TorusGeometry(0.3, 0.2, 32, 64),
+    material
+)
+torus.position.x = 1.5
 
+const plane = new THREE.Mesh(
+    new THREE.PlaneGeometry(5, 5),
+    material
+)
+plane.rotation.x = - Math.PI * 0.5 //Why Math.PI
+plane.position.y = - 0.65
+
+scene.add(sphere, cube, torus, plane)
 
 /**
  * Sizes
@@ -128,6 +118,15 @@ const clock = new THREE.Clock()
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
+
+    // Update objects
+    sphere.rotation.y = 0.1 * elapsedTime
+    cube.rotation.y = 0.1 * elapsedTime
+    torus.rotation.y = 0.1 * elapsedTime
+
+    sphere.rotation.x = 0.15 * elapsedTime
+    cube.rotation.x = 0.15 * elapsedTime
+    torus.rotation.x = 0.15 * elapsedTime
 
     // Update controls
     controls.update()
