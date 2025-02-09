@@ -48,6 +48,7 @@ directionalLight.shadow.camera.far = 6;
 //!Lets add a camera helper 
 const directionalLightCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
 
+directionalLightCameraHelper.visible = false;
 
 
 scene.add(directionalLightCameraHelper);
@@ -76,8 +77,34 @@ spotLight.shadow.camera.far = 4.5;
 
 //! Add a camera helper
 const spotLightCameraHelper = new THREE.CameraHelper(spotLight.shadow.camera);
-
+spotLightCameraHelper.visible = false;
 scene.add(spotLightCameraHelper);
+
+
+//! Now lets add a spot light
+
+const pointLight = new THREE.PointLight(0xffffff, 2.0);
+pointLight.castShadow = true;
+
+pointLight.position.set(-1,1,0);
+scene.add(pointLight);
+
+//! increase the shadow map size for clearer shadows
+
+pointLight.shadow.mapSize.width = 1024;
+pointLight.shadow.mapSize.height = 1024;
+
+pointLight.shadow.camera.near = .1;
+pointLight.shadow.camera.far = 5;
+
+const pointLightCameraHelper = new THREE.CameraHelper(pointLight.shadow.camera);
+
+scene.add(pointLightCameraHelper);
+
+
+
+
+
 
 /**
  * Materials
