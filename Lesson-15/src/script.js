@@ -12,7 +12,13 @@ const gui = new GUI()
 const canvas = document.querySelector('canvas.webgl')
 
 // Scene
-const scene = new THREE.Scene()
+const scene = new THREE.Scene();
+
+//Textures
+
+const textureLoader = new THREE.TextureLoader();
+const bakedShadow = textureLoader.load('/textures/bakedShadow.jpg');
+bakedShadow.colorSpace = THREE.SRGBColorSpace;
 
 /**
  * Lights
@@ -99,6 +105,7 @@ pointLight.shadow.camera.far = 5;
 
 const pointLightCameraHelper = new THREE.CameraHelper(pointLight.shadow.camera);
 
+pointLightCameraHelper.visible =false;
 scene.add(pointLightCameraHelper);
 
 
@@ -129,7 +136,9 @@ sphere.castShadow = true;
 
 const plane = new THREE.Mesh(
     new THREE.PlaneGeometry(5, 5),
-    material
+    new THREE.MeshBasicMaterial({
+        map: bakedShadow
+    })
 )
 plane.rotation.x = - Math.PI * 0.5
 plane.position.y = - 0.7
@@ -185,7 +194,7 @@ renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 //! Step 1: Add the shadow maps 
-renderer.shadowMap.enabled = true;
+renderer.shadowMap.enabled = false;
 /**
  * Animate
  */
